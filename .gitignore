@@ -1,0 +1,14 @@
+.DS_Store
+
+# Keep the learning workflow docs in Git, but do not commit heavy image batches by default.
+reference-library/inbox/
+reference-library/processed/**/*.jpg
+reference-library/processed/**/*.jpeg
+reference-library/processed/**/*.png
+reference-library/processed/**/*.webp
+
+# Keep batch metadata/versionable notes when added later.
+!reference-library/processed/**/manifest.yaml
+!reference-library/processed/**/manifest.yml
+!reference-library/processed/**/*.md
+!reference-library/processed/**/_urls.txt
