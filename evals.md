@@ -99,7 +99,18 @@
 - 可迁移审美只迁移克制、光线、质感、主次分工
 - 明确 natural skin texture / no plastic retouch
 
-### E09 — 产品原样
+### E09 — 人物状态注册
+
+**用户输入**：给我一张车旁人物 lifestyle，重点是人物状态要松弛、低表达，不要像硬摆拍模特。
+
+**通过标准**
+- 调用 Human Presence Register，但不自动套老车、狗、冲浪板等具体元素
+- 人物是场景里的安静状态点：low-expression、quiet detachment、not performing for camera
+- 身体有自然支点：靠车、搭窗框/车顶/包带/头侧，或真实生活动作
+- 允许门框/车窗/前景物打断人物，不要求完整正面展示
+- 禁止 staged smile、dramatic fashion pose、过度营业式眼神
+
+### E10 — 产品原样
 
 **用户输入**：这个香水瓶按参考图保持原样，换成高级木质桌面场景。
 
@@ -112,7 +123,7 @@
 
 ## Learning
 
-### E10 — 学习满意图
+### E11 — 学习满意图
 
 **用户输入**：这批图学一下，收进我的风格。
 
@@ -122,7 +133,7 @@
 - 更新 `aesthetic.md` 学习日志
 - 图片移动到 `reference-library/processed/YYYY-MM-DD_topic/`，不删除
 
-### E11 — 只看不入库
+### E12 — 只看不入库
 
 **用户输入**：只看一眼这张图，别入库。
 

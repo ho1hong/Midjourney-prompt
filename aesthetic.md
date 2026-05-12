@@ -78,6 +78,7 @@
 | 清晰区与层次 | **主次分工**：该锐的（车身关键面、人物活动区）清晰；背景可退后。**前景层**常用虚化的草叶、树干、狗、虚焦的另一辆车、吊床边缘、尾灯光斑等做 **框景与纵深**（多图重复，已升为共性）。 |
 | 空间与机位 | **非平淡平视**：低机位压车、略高跟踪、广角环境叙事、对称正后方等；生活场景 **眼平广角**；**车内叙事**可出现 **天窗框景 / 车内仰拍 POV**（见数据集 C），与车外大片二选一或分镜使用。 |
 | 人物与生活 | 若出现人：**自然抓拍感**（徒步、家庭动线、情侣与相机），户外 **Gorpcore-lite / 静奢度假**；**动物极前景虚化**（狗贴镜）作 **即兴感**，不抢车身可读性。**不**必每张都带人。 |
+| 人物动态与状态注册（Human Presence Register，跨题材可迁移） | **人物不是广告里的表演者，而是品牌世界里正在发生的一个安静状态。** 适用于汽车、旅行、时装、生活方式中需要人物进入画面时。状态：`quiet detachment, unforced presence, low-expression face, casually self-contained, not performing for camera`。动态：身体必须有自然支点，例如 `one hand resting on car roofline / open window frame / bag strap / side of head`，`relaxed asymmetrical stance, weight shifted onto one leg`，`seated sideways in an open vehicle doorway, one knee folded up, hand loosely dropped`，或生活动作 `carrying surfboard / walking dog / crouching / waiting / leaning`。构图允许 `foreground interruption by dog, car door, window frame, smoke, railing, bag`，人物可作为尺度、停顿、情绪，而不是永远完整正面主角。**禁止** staged smile、dramatic fashion pose、过度营业式眼神。 |
 | 动态与静止 | 同一大审美下可分支：**静止露营陈设** vs **林道侧视 + 轮辐/环境动感模糊**；依当条指令选一条，避免「露营桌 + 高速模糊」无逻辑叠用。 |
 | 质感底线 | 拒绝 **塑料磨皮、蜡感高光、假 HDR 光晕**；保留 **自然肤色与织物**（有人时）、车漆 **可读反射与体积**。 |
 | 商业 × 艺术（注册 D，可选） | **产品/品牌可读性**（车漆、 keyline、灯带、材质）与 **非目录式镜头** 并存：允许 **强烈 Dutch tilt**、**广角夸张的纵深**、**抽象布景**、**人物时装化前景虚化**、**反射/眩光作为叙事**。**不**把「每张都歪地平线」当默认——仅当用户要「广告片但更艺术」时启用（详见下文摄影师参照）。 |
@@ -167,6 +168,27 @@
 | 露营叙事 | **尾门开启向内看**：床垫、暖光小灯、冷暖对撞的「把卧室放进荒野」——与森林帐篷类生活片同源，机位不同。 |
 
 **迭代提示**：用户说「要像施洛瑟那种」时，从表中选 **2–4 个点**写进英文 prompt，并保留 **一条清晰的产品优先级句**（如 `hero vehicle razor-sharp, unmistakable premium EV design`），避免艺术机位把车冲没。
+
+---
+
+### 数据集 G — 人物动态与状态（9 张参考，2026-05-12）
+
+**说明**：用户确认这批参考的重点是 **人物动态 / 氛围 / 构图**，不是具体车型、服装品牌或某个摄影师默认风格。它作为 **Human Presence Register** 入库：当画面需要人物时，用来指导人物如何进入品牌世界；当任务不需要人物时，不自动加人。
+
+| 维度 | 观察 |
+|------|------|
+| 人物状态 | **低表达、轻疏离、安静自持**：不强笑、不强看镜头，像在自己的节奏里被捕捉；可看镜头，但不索取注意力。 |
+| 身体动态 | **动作小但重心明确**：倚靠车身/门框/栏杆，一手搭车顶/窗框/包带/头侧；站姿轻微歪斜，重心落单腿；坐在车门框时一膝收起、手自然垂落。 |
+| 生活动作 | 搬冲浪板、跑步遛狗、蹲下抱狗、等待、靠着车、坐进车里；动作像真实生活片段，不像舞台 pose。 |
+| 构图关系 | 人物常被车门、车窗、栏杆、烟雾、狗、包、座椅打断或局部遮挡；人物可以在边缘/下半部/中景，和物件共同组织画面。 |
+| 氛围 | **sun-faded editorial lifestyle / quiet resort mood / vintage catalog energy / casual documentary fashion**；复古但不靠廉价滤镜，松弛来自动作、道具与真实身体重心。 |
+
+**Prompt 方向**
+`a quietly self-contained person integrated into the scene, relaxed asymmetrical stance, one hand resting on the vehicle roofline, low-expression gaze away from camera, not posing, not smiling, calm human presence as a scale and mood note`
+
+`two people caught mid-action loading a surfboard into the back of the van, bodies partially hidden by the open hatch and window frame, documentary fashion mood, unforced movement, no staged smile`
+
+**使用边界**：人物出现时调用；不要把本批的老车、狗、冲浪板、复古服装当成全局默认元素。人物服务品牌世界观，不喧宾夺主。
 
 ---
 
@@ -322,6 +344,7 @@
 | 2026-04-21 | **多车路由修订（第一版）**：用户反馈 MJ 在双车/多车单帧场景表现不稳；把「双车 = 一张塞两台」改为默认拆两张 hero + 共享色光族的系列套图。 |
 | 2026-04-21 | **多车路由修订（第二版，反转）**：用户明确「**双车展示默认以双车的完整展示，并且摆放规整**」。反转第一版默认——**单帧双车 + 完整入镜 + 规整摆位**重新成为默认路由；拆张只在用户明确要系列套图时启用。用户同批提供 **12 张行业双车正典参考**（Alfa Romeo trio / Nissan IMk-Ariya / GAC / Stelato S9 双组 / Porsche 911 多组 / Taycan-Macan / Alpina / Maextro S800 / Porsche 911 Targa / Porsche 20y China），归纳 **Dual-Hero Composition Grammar** 5 种经典摆位（DC-1 Mirrored 3/4 Pair 最常用 / DC-2 Parallel Stagger / DC-3 Opposing Bookends / DC-4 Symmetric Line-up / DC-5 Close-Stage Pair），并升级成**跨品牌可迁移共性**。新增**数据集 F**；SKILL.md `Multi-Subject Route` 整节重写，硬指标 8 条（两车完整入镜 / 同地面 / 同光向 / 同尺度 / 规整间距 / 水平克制 / 宽画幅 / 色彩对比）。 |
 | 2026-04-28 | **持续迭代能力增强**：统一优先级为「用户明确硬指令 > 当条任务目标 > 审美母语 guardrail > 共性 > 数据集」；新增 quick / standard / campaign 三档交付模式；修正 `defect-patches.md` 中双车旧逻辑，明确拆张只是降级/扩展；新增 `evals.md` 回归校验集与 `reference-library/README.md` 的批次 `manifest.yaml` 规范，方便后续持续养 skill。 |
+| 2026-05-12 | **学习人物动态与状态参考（9 张）**：新增 **数据集 G / Human Presence Register**。确认人物不是广告里的表演者，而是品牌世界里正在发生的安静状态；沉淀低表达、轻疏离、自然支点、生活动作、前景/门框/狗/烟雾打断构图等可迁移规则。仅在任务需要人物时调用，不把老车、狗、冲浪板或复古服装写成全局默认。 |
 
 ---
 
