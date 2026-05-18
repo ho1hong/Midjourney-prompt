@@ -42,14 +42,16 @@ description: Builds Midjourney prompts and iterates them using learned cross-ima
 
 当用户要求「出 MJ prompt / Midjourney prompt / 给我一版 mj」时，**默认只输出自然语言 prompt**（不含 Midjourney `--` 参数）。英文与中文 prompt **分开两个独立代码块**，方便用户各自复制；注释独立成段，不混进代码块。
 
+**Prompt 语法默认**：从 2026-05-18 起，所有自然语言 prompt 默认按 **Midjourney V8.1 写法**组织：更短、更字面、更结构化，强调可见主体、动作、场景、光线、构图、材质与少量关键负向约束。**默认不写任何参数，也不写 `--v 8.1`**；版本由用户在 MJ 客户端/设置中选择。
+
 ### 交付模式（持续迭代用）
 
 根据用户语气自动选择交付重量；用户未指定时用 **standard**。
 
 | 模式 | 触发 | 输出 |
 |------|------|------|
-| **quick** | 「快给一条 / 只要英文 / 先试一版 / quick」 | 只给 **1 个英文 prompt 代码块**，无中文、无注释、无参数 |
-| **standard** | 默认；「给我一版 mj / 出 prompt」 | 英文 + 中文双代码块 + 注释 + 恰好 3 条发散方向 |
+| **quick** | 「快给一条 / 只要英文 / 先试一版 / quick」 | 只给 **1 个英文 prompt 代码块**，无中文、无注释、无参数，按 V8.1 简洁结构写 |
+| **standard** | 默认；「给我一版 mj / 出 prompt」 | 英文 + 中文双代码块 + 注释 + 恰好 3 条发散方向；prompt 本体无参数 |
 | **campaign** | 「一组 / 系列 / campaign / KV / 镜头矩阵 / 多张」 | 先给系列策略（镜头职位、色温弧、色彩呼应），再按张输出 prompt；每张一职，避免重复 |
 
 规则：quick 模式也必须先过审美母语和反审美清单，只是**少说**；campaign 模式优先建立系统，而不是堆单张帅图。
@@ -87,10 +89,16 @@ description: Builds Midjourney prompts and iterates them using learned cross-ima
 ## Global Hard Rules
 
 - 所有 prompt 写成**一行英文**，逗号分隔子句，MJ 对结构化逗号链解析最好
+- 按 Midjourney 官方 Prompt Basics 校准：prompt 应该短、清楚、像画面快照。避免把策略说明、客户话术、设计理论、长篇意图解释塞进 prompt；模型更容易识别具体可见物件、材质、场景和光线。
+- 官方文档导向下，**具体名词优先于抽象概念**：写 `wet stone pavement, black-tile rooflines, wooden lattice windows, warm window lights`，不要只写 `architectural memory, cultural atmosphere, brand heritage`。抽象词只能作为开头风格锚点，不能替代画面元素。
+- Prompt 长度要可控。复杂画面优先保留：主体、构图、3-6 个关键可见物件、光线、色彩、材质；删掉重复形容词和不会直接转化为画面的策略词。
 - **默认不输出 `--` 参数**；需要否定与约束时，优先写进**自然英语**（如 `no watermark, no extra logos, tack-sharp vehicle body`），少用或不用 `--no` 除非是用户要的「完整命令」模式
-- 若输出完整命令（用户明确要求时），参数顺序见 `params.md`：`--p（可多枚）→ --sref → --cref → --ar → --style → --s → --c → --w → --no → --v`
+- 若输出完整命令（用户明确要求时），所有参数放在 prompt 最后，参数前留空格，参数之间不要用逗号；**仍然默认不加 `--v 8.1`**，除非用户明确说「版本也写上 / 带版本参数」。参数顺序见 `params.md`：`--p（可多枚）→ --sref → --cref → --ar → --style/raw → --s → --c → --w → --no → --v`
+- 负面约束按官方参数逻辑处理：用户要完整命令或需要强排除时用 `--no <items>` 放在最后；普通 prompt 正文里尽量少写 `without / don't / no` 长串，因为模型可能仍会关注这些词对应的物件。
 - 语义上绝不混用冲突指令（例如写实与重度风格化在同一句里互殴）
 - 复刻/身份锁定场景：不在 prompt 里强塞 moodboard 描述；**参考图 workflow** 仍用 `--sref`/`--cref`——仅当用户要**附参数**时写出（见 `params.md` 注入策略）
+- 使用 `image prompt`、`--sref`、`--p` / moodboard 时，不要同时写一长串风格词。尤其在 V8.1 中，多个控制源冲突会被模型平均化，常见结果是主体更听话但画面变薄、变平、变塑料。先让参考图负责风格，文字只负责主体、构图和关键可见元素。
+- 后续 prompt 写法默认使用 V8.1 语法规则，但交付文本不带版本参数。V7 / V8.1 的真实出图差异只在用户明确要「完整命令 / 参数策略 / 版本对比」时讨论，具体见 `params.md`。
 - 需要可读文字时，文字用**英文双引号**包裹（V8+ 对引号内文字渲染最佳）
 - 写实人像必须显式声明光线方向与质感（`natural skin texture, no plastic retouch`）
 - 下文 **Template 示例**中带 `--` 仅供内部结构与查阅；**交付用户时改为纯描述句**，剥掉 `--` 段
@@ -183,9 +191,31 @@ exactly two vehicles in frame, no third car anywhere in the background, no addit
 
 核心原则：
 - **具体名词 > 模糊形容词**（用 `Kodak Portra 400 grain` 不是 `film look`）
+- **画面物件 > 创意说明**（用 `low round lacquer table, wet stone pavement, tiny seated figures` 不是 `banquet atmosphere, inheritance feeling`）
 - **光线单独成句**，不要和环境混在一起
 - **颜色用具名词汇**（`muted oxblood, dusty sage, warm ivory`）不要只说 `vintage colors`
 - **镜头参数具体化**（`shot on 85mm f/1.4, shallow depth of field`）
+
+## Official Midjourney Syntax Check
+
+Before delivering any prompt, check:
+
+- Does the first phrase state the image subject or visual style clearly?
+- Are the key scene elements concrete and visible enough for the model to draw?
+- Is the prompt concise enough, or is it a long list of strategy / mood words?
+- Are composition, lighting, color, and material each described once, without repetition?
+- If using image prompt / `--sref` / moodboard, is the text prompt simple enough that it does not introduce a competing style?
+- If using V8.1, are there conflicting control sources that could average out the style?
+- If parameters are included, are they at the very end and separated by spaces, not commas?
+- If exclusions are required, are they placed in `--no` only when delivering a full command?
+
+Rewrite if:
+
+- the prompt says only `brand feeling`, `cultural atmosphere`, `premium hierarchy`, or `heritage memory` without visible objects.
+- the prompt contains many equal-weight elements that will compete.
+- image prompt, style reference, moodboard, and text prompt are all trying to control style at the same time.
+- the prompt depends on text rendering to explain the idea.
+- the prompt is so long that important nouns are diluted.
 
 ## Routing Rules
 
