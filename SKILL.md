@@ -89,18 +89,25 @@ description: Builds Midjourney prompts and iterates them using learned cross-ima
 ## Global Hard Rules
 
 - 所有 prompt 写成**一行英文**，逗号分隔子句，MJ 对结构化逗号链解析最好
+- 好 prompt 是视觉控制，不是形容词堆砌。把 prompt 当成视觉导演 briefing：摄影指导、灯光指导、美术指导、布景指导、后期调色共同需要的指令。
 - 按 Midjourney 官方 Prompt Basics 校准：prompt 应该短、清楚、像画面快照。避免把策略说明、客户话术、设计理论、长篇意图解释塞进 prompt；模型更容易识别具体可见物件、材质、场景和光线。
 - 官方文档导向下，**具体名词优先于抽象概念**：写 `wet stone pavement, black-tile rooflines, wooden lattice windows, warm window lights`，不要只写 `architectural memory, cultural atmosphere, brand heritage`。抽象词只能作为开头风格锚点，不能替代画面元素。
 - Prompt 长度要可控。复杂画面优先保留：主体、构图、3-6 个关键可见物件、光线、色彩、材质；删掉重复形容词和不会直接转化为画面的策略词。
+- 少写空气词 / prompt junk：`hyperrealistic`, `ultra detailed`, `cinematic masterpiece`, `timeless elegance`, `award-winning`, `breathtaking`, `luxury feeling`, `photorealistic atmosphere`。这些词泛、弱、不可控；除非用户明确要某种夸张风格，否则用镜头、光线、材质、空间、色彩来替代。
+- 把情绪翻译成物理视觉：不要只写 `emotional / nostalgic / luxury`，改写为 `soft late-afternoon amber haze`, `low-saturation teal-gray shadow`, `polished walnut reflections`, `warm ivory paper texture`。
+- 主体优先级必须可见：用 `right foreground hero bottle`, `left clean copy space`, `distant silhouettes`, `low-contrast background layers`, `soft secondary architecture` 这类空间和权重词告诉 MJ 谁是主角、谁是背景、谁只能弱化存在。
 - **默认不输出 `--` 参数**；需要否定与约束时，优先写进**自然英语**（如 `no watermark, no extra logos, tack-sharp vehicle body`），少用或不用 `--no` 除非是用户要的「完整命令」模式
 - 若输出完整命令（用户明确要求时），所有参数放在 prompt 最后，参数前留空格，参数之间不要用逗号；**仍然默认不加 `--v 8.1`**，除非用户明确说「版本也写上 / 带版本参数」。参数顺序见 `params.md`：`--p（可多枚）→ --sref → --cref → --ar → --style/raw → --s → --c → --w → --no → --v`
 - 负面约束按官方参数逻辑处理：用户要完整命令或需要强排除时用 `--no <items>` 放在最后；普通 prompt 正文里尽量少写 `without / don't / no` 长串，因为模型可能仍会关注这些词对应的物件。
+- `--no` 安全规则（Discord community notes, 2026-05-20）：`--no` 后面的词会被拆开独立理解，避免写会被单独误读或触发审核的名词组合。不要写 `--no modern clothing`（可能被理解成 `no clothing`），改写为 `--no contemporary fashion`，或在正文正向说明 `traditional kimono only, contemporary styling excluded`。
 - 语义上绝不混用冲突指令（例如写实与重度风格化在同一句里互殴）
 - 复刻/身份锁定场景：不在 prompt 里强塞 moodboard 描述；**参考图 workflow** 仍用 `--sref`/`--cref`——仅当用户要**附参数**时写出（见 `params.md` 注入策略）
 - 使用 `image prompt`、`--sref`、`--p` / moodboard 时，不要同时写一长串风格词。尤其在 V8.1 中，多个控制源冲突会被模型平均化，常见结果是主体更听话但画面变薄、变平、变塑料。先让参考图负责风格，文字只负责主体、构图和关键可见元素。
+- `--sref` 排错规则（Discord community notes, 2026-05-20）：若 sref “绑架”主体、颜色、暗调或把参考图里的花/文字/物件带进来，先减少控制源：去掉 `--p` / moodboard，降低 `--sw`（如 50），把透明底 sref 转成 JPG，无效再换 `--sv` / 模型版本。正文里多数词应描述主体与空间，风格交给 sref，不要再堆一串风格词。
 - 后续 prompt 写法默认使用 V8.1 语法规则，但交付文本不带版本参数。V7 / V8.1 的真实出图差异只在用户明确要「完整命令 / 参数策略 / 版本对比」时讨论，具体见 `params.md`。
 - 需要可读文字时，文字用**英文双引号**包裹（V8+ 对引号内文字渲染最佳）
 - 写实人像必须显式声明光线方向与质感（`natural skin texture, no plastic retouch`）
+- 人物全身 / 半身构图不能只写 `full body`。若希望下半身出现，必须描述画面底部：鞋、脚、裤脚/裙摆、地面、站姿、阴影或脚下材质，例如 `white socks and leather loafers visible at the bottom of frame, feet standing on wet stone pavement, full figure framed from head to shoes`。如果 prompt 大部分都在写脸，MJ 会倾向生成脸部特写。
 - 下文 **Template 示例**中带 `--` 仅供内部结构与查阅；**交付用户时改为纯描述句**，剥掉 `--` 段
 - **多主体路由硬规则**：用户提到「双车 / 两台 / 三台 / 车队 / fleet / 多车」→ 默认走 **Multi-Subject Route**（见下文）。**默认一张图完整展示所有车**，按 Dual-Hero Composition Grammar 的规整构图写；拆张只在用户明确要系列套图时才启用。
 
@@ -192,9 +199,26 @@ exactly two vehicles in frame, no third car anywhere in the background, no addit
 核心原则：
 - **具体名词 > 模糊形容词**（用 `Kodak Portra 400 grain` 不是 `film look`）
 - **画面物件 > 创意说明**（用 `low round lacquer table, wet stone pavement, tiny seated figures` 不是 `banquet atmosphere, inheritance feeling`）
+- **视觉控制 > 形容词堆砌**（用 `low-angle 50mm product photography, warm champagne-gold lighting, soft amber reflections on polished walnut surface` 不是 `beautiful cinematic luxury atmosphere`）
 - **光线单独成句**，不要和环境混在一起
 - **颜色用具名词汇**（`muted oxblood, dusty sage, warm ivory`）不要只说 `vintage colors`
 - **镜头参数具体化**（`shot on 85mm f/1.4, shallow depth of field`）
+
+## Visual Director Briefing Structure
+
+For difficult creative images, write prompts as a visual director briefing:
+
+```text
+[subject and hierarchy],
+[composition / camera / spatial logic],
+[key visible objects],
+[lighting direction and quality],
+[materials and texture],
+[color palette],
+[style / medium if needed]
+```
+
+Keep each layer doing a different job. Do not repeat the same idea through many adjectives.
 
 ## Official Midjourney Syntax Check
 
@@ -203,11 +227,15 @@ Before delivering any prompt, check:
 - Does the first phrase state the image subject or visual style clearly?
 - Are the key scene elements concrete and visible enough for the model to draw?
 - Is the prompt concise enough, or is it a long list of strategy / mood words?
+- Are there any air words that should be replaced by lens, lighting, material, color, silhouette, reflection, negative space, or spatial-depth controls?
+- Is the subject hierarchy explicit enough for the model to know what is hero, secondary, and background?
 - Are composition, lighting, color, and material each described once, without repetition?
 - If using image prompt / `--sref` / moodboard, is the text prompt simple enough that it does not introduce a competing style?
 - If using V8.1, are there conflicting control sources that could average out the style?
+- If requesting a full-body or lower-body person, does the prompt mention shoes/feet/floor/lower garment and where they sit in the frame?
 - If parameters are included, are they at the very end and separated by spaces, not commas?
 - If exclusions are required, are they placed in `--no` only when delivering a full command?
+- Does any `--no` item contain a word that becomes dangerous or semantically wrong if split apart?
 
 Rewrite if:
 
@@ -216,6 +244,22 @@ Rewrite if:
 - image prompt, style reference, moodboard, and text prompt are all trying to control style at the same time.
 - the prompt depends on text rendering to explain the idea.
 - the prompt is so long that important nouns are diluted.
+- the edit prompt is conversational (`remove this`, `change it to`) instead of a visual description of the desired result.
+
+## Prompt Craft Operations（Discord Community Notes, 2026-05-20）
+
+These are operation-level rules, not aesthetic defaults.
+
+| Situation | Rule | Better wording |
+|-----------|------|----------------|
+| Full body / lower body missing | Mention the bottom of the frame directly; `full body` alone is weak. | `full figure framed from head to shoes, white socks and leather loafers visible at the bottom of frame, feet on wet stone pavement` |
+| MJ Edit / erased region | Use visual result language, not conversational commands. | `empty background space matching the original wall texture and side lighting` / `same person with a calm serious expression, closed lips, relaxed eyes` |
+| Negative prompts | `--no` splits terms; avoid nouns that become wrong alone. | use `--no contemporary fashion` instead of `--no modern clothing`; prefer positive specification when possible |
+| Sref hijacks subject/color | Reduce competing controls before rewriting everything. | remove `--p`, lower `--sw` to 50, convert transparent PNG sref to JPG, write more subject words and fewer style words |
+| LLM prompt junk | Delete vague praise and outdated quality tokens. | replace `timeless elegance, masterpiece, 8k` with lens / light / material / spatial hierarchy |
+| Prompt support / debugging | Need goal + prompt + result; “improve quality” is too vague. | identify one defect: subject wrong, style hijacked, lower body missing, colors too dark, extra character |
+
+`cref/cw` and `oref/ow` community working model: `cw` behaves like character-reference radius (low = face emphasis, high = more whole-body identity). `ow` behaves more like input adherence strength; lower it when changing pose/expression, raise it when fighting other style controls. Treat this as practical guidance, not a fixed law.
 
 ## Routing Rules
 

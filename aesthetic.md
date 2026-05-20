@@ -79,6 +79,7 @@
 | 空间与机位 | **非平淡平视**：低机位压车、略高跟踪、广角环境叙事、对称正后方等；生活场景 **眼平广角**；**车内叙事**可出现 **天窗框景 / 车内仰拍 POV**（见数据集 C），与车外大片二选一或分镜使用。 |
 | 人物与生活 | 若出现人：**自然抓拍感**（徒步、家庭动线、情侣与相机），户外 **Gorpcore-lite / 静奢度假**；**动物极前景虚化**（狗贴镜）作 **即兴感**，不抢车身可读性。**不**必每张都带人。 |
 | 人物动态与状态注册（Human Presence Register，跨题材可迁移） | **人物不是广告里的表演者，而是品牌世界里正在发生的一个安静状态。** 适用于汽车、旅行、时装、生活方式中需要人物进入画面时。状态：`quiet detachment, unforced presence, low-expression face, casually self-contained, not performing for camera`。动态：身体必须有自然支点，例如 `one hand resting on car roofline / open window frame / bag strap / side of head`，`relaxed asymmetrical stance, weight shifted onto one leg`，`seated sideways in an open vehicle doorway, one knee folded up, hand loosely dropped`，或生活动作 `carrying surfboard / walking dog / crouching / waiting / leaning`。构图允许 `foreground interruption by dog, car door, window frame, smoke, railing, bag`，人物可作为尺度、停顿、情绪，而不是永远完整正面主角。**禁止** staged smile、dramatic fashion pose、过度营业式眼神。 |
+| Prompt 操作层（Discord Prompt Craft Notes，跨题材可迁移） | **好 prompt 是视觉控制，不是形容词堆砌。** 规则：全身人物必须写下半身锚点（鞋、脚、地面、裤脚/裙摆、底部阴影），不要只写 `full body`；MJ Edit 用结果画面描述，不用 `remove this / change that` 对话命令；`--no` 后词会被拆开理解，避免 `--no modern clothing` 这类可误读组合；sref 绑架画面时先降 `--sw`、去掉 `--p`、转 JPG、让文字多描述主体少描述风格；删除 `masterpiece / 8k / timeless elegance / hyperrealistic` 等 prompt junk，把抽象感觉翻成光线、材质、空间、层级。 |
 | 动态与静止 | 同一大审美下可分支：**静止露营陈设** vs **林道侧视 + 轮辐/环境动感模糊**；依当条指令选一条，避免「露营桌 + 高速模糊」无逻辑叠用。 |
 | 质感底线 | 拒绝 **塑料磨皮、蜡感高光、假 HDR 光晕**；保留 **自然肤色与织物**（有人时）、车漆 **可读反射与体积**。 |
 | 商业 × 艺术（注册 D，可选） | **产品/品牌可读性**（车漆、 keyline、灯带、材质）与 **非目录式镜头** 并存：允许 **强烈 Dutch tilt**、**广角夸张的纵深**、**抽象布景**、**人物时装化前景虚化**、**反射/眩光作为叙事**。**不**把「每张都歪地平线」当默认——仅当用户要「广告片但更艺术」时启用（详见下文摄影师参照）。 |
@@ -345,6 +346,7 @@
 | 2026-04-21 | **多车路由修订（第二版，反转）**：用户明确「**双车展示默认以双车的完整展示，并且摆放规整**」。反转第一版默认——**单帧双车 + 完整入镜 + 规整摆位**重新成为默认路由；拆张只在用户明确要系列套图时启用。用户同批提供 **12 张行业双车正典参考**（Alfa Romeo trio / Nissan IMk-Ariya / GAC / Stelato S9 双组 / Porsche 911 多组 / Taycan-Macan / Alpina / Maextro S800 / Porsche 911 Targa / Porsche 20y China），归纳 **Dual-Hero Composition Grammar** 5 种经典摆位（DC-1 Mirrored 3/4 Pair 最常用 / DC-2 Parallel Stagger / DC-3 Opposing Bookends / DC-4 Symmetric Line-up / DC-5 Close-Stage Pair），并升级成**跨品牌可迁移共性**。新增**数据集 F**；SKILL.md `Multi-Subject Route` 整节重写，硬指标 8 条（两车完整入镜 / 同地面 / 同光向 / 同尺度 / 规整间距 / 水平克制 / 宽画幅 / 色彩对比）。 |
 | 2026-04-28 | **持续迭代能力增强**：统一优先级为「用户明确硬指令 > 当条任务目标 > 审美母语 guardrail > 共性 > 数据集」；新增 quick / standard / campaign 三档交付模式；修正 `defect-patches.md` 中双车旧逻辑，明确拆张只是降级/扩展；新增 `evals.md` 回归校验集与 `reference-library/README.md` 的批次 `manifest.yaml` 规范，方便后续持续养 skill。 |
 | 2026-05-12 | **学习人物动态与状态参考（9 张）**：新增 **数据集 G / Human Presence Register**。确认人物不是广告里的表演者，而是品牌世界里正在发生的安静状态；沉淀低表达、轻疏离、自然支点、生活动作、前景/门框/狗/烟雾打断构图等可迁移规则。仅在任务需要人物时调用，不把老车、狗、冲浪板或复古服装写成全局默认。 |
+| 2026-05-20 | **学习 Discord Prompt Craft 讨论（操作层）**：新增跨题材 **Prompt 操作层**。沉淀下半身锚点、MJ Edit 视觉结果语言、`--no` 拆词安全、sref 绑架排错、控制源减法、LLM prompt junk 清理等规则；该批不作为审美风格，只作为写 prompt / 排错 / 回归校验的操作规范。 |
 
 ---
 
